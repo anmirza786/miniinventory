@@ -1,0 +1,77 @@
+{% extends 'base.html' %} {% block title %}Search{% endblock %} {% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-light container">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'home' %}">Smart Inven</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="{% url 'home' %}"
+            >Home</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'search' %}"
+            >Search & Add Customers</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home' %}">Get Report</a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-danger" href="{% url 'logout' %}">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+{% endblock %} {% block content %}
+<div class="container">
+  <div style="display: flex; justify-content: space-evenly" class="m-lg-4">
+    <form class="d-flex" action="{% url 'search' %}" method="get">
+      <input
+        class="form-control me-2"
+        type="text"
+        class="input"
+        placeholder="Search..."
+        name="query"
+      />
+      <button class="btn btn-outline-info" type="submit" style="width: 150px;"><i class="fa fa-search"></i> Search</button>
+    </form>
+    <a href="{% url 'addcustomer' %}" class="btn btn-primary"><i class="fa fa-book"></i> Add Customer</a>
+  </div>
+  <div class="columns is-multiline mb-6">
+    <div class="column is-12 has-text-centered mt-6 mb-6">
+      <h3>Search term: "{{ query }}"</h3>
+    </div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Customer</th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for customer in customers %}
+        <tr>
+        <th scope="row">{{customer.name}}</th>
+        <th scope="row"><a class="btn btn-primary" href="{% url 'fee' customer.id %}"><i class="fa fa-add"></i> Add Fee/Payment</a></th>
+        <th scope="row"><a class="btn btn-danger" href="{% url 'delete' customer.id %}"><i class="fa fa-trash"></i> Delete Customer</a></th>
+      </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

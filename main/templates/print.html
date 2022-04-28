@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body onload="printDiv('select')">
+<div id="select">Customer Name: {{ fee.customer.name }} <br>
+    Customer Phone Number: {{ fee.customer.phone }} <br>
+    Customer Cnic Number: {{ fee.customer.cnic }} <br>
+    Fee Paid: {{ fee.fee }} <br>
+    Fee Remaining: {{ fee.remaining_fee }} <br>
+    Fee Month: {{ fee.month }} <br>
+    Fee Giving Date: {{ fee.given_on_date }}</div>
+<script>
+  
+function printDiv(divName) {
+  var printContents = document.getElementById(divName).innerHTML;
+  var originalContents = document.body.innerHTML;
+ 
+  document.body.innerHTML = printContents;
+
+  window.print();
+
+  document.body.innerHTML = originalContents;
+  window.history.go(-1)
+//location.reload();
+}
+</script>
+</body>
+</html>

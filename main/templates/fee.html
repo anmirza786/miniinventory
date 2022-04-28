@@ -1,0 +1,97 @@
+{% extends 'base.html' %} {% block title %} Fee Form{% endblock %} 
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-light container">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'home' %}">Smart Inven</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="{% url 'home' %}"
+            >Home</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'search' %}"
+            >Search & Add Customers</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home' %}">Get Report</a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-danger" href="{% url 'logout' %}">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+{% endblock %} {% block content %}
+<div class="container">
+  <div
+    style="
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+    "
+    class="m-lg-4"
+  >
+    <div>Customer Name : {{ customer.name }}</div>
+    <div>Customer's Phone Number : {{ customer.phone }}</div>
+    <div>Customer's CNIC Number : {{ customer.cnic }}</div>
+  </div>
+  <form method="post" id="select">
+    {% csrf_token %} {{ form.as_p }}
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1">Select Month</span>
+      <input
+        type="date"
+        class="form-control"
+        placeholder="month"
+        aria-label="month"
+        aria-describedby="basic-addon1"
+        name="month"
+        id="month"
+      />
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+  <button onclick="printDiv('select')">Print</button>
+</div>
+<script>
+  $(function () {
+    $("#datetimepicker1").datetimepicker({
+      format: "DD/MM/YYYY HH:mm",
+    });
+  });
+</script>
+{% endblock %}
+{% block script %}
+<script>
+  
+function printDiv(divName) {
+  var printContents = document.getElementById(divName).innerHTML;
+  var originalContents = document.body.innerHTML;
+ 
+  document.body.innerHTML = printContents;
+
+  window.print();
+
+  document.body.innerHTML = originalContents;
+//location.reload();
+}
+</script>
+{% endblock %}
