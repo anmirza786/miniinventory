@@ -28,15 +28,15 @@
 </nav>
 {% endblock %}
 {% block content %}
-    <!-- <div class="container">
+    <div class="container">
       <table border="0" cellspacing="5" cellpadding="5">
         <tbody><tr>
             <td>Minimum date:</td>
-            <td><input type="date" id="min" name="min"></td>
+            <td><input type="text" id="min" name="min"></td>
         </tr>
         <tr>
             <td>Maximum date:</td>
-            <td><input type="date" id="max" name="max"></td>
+            <td><input type="text" id="max" name="max"></td>
         </tr>
     </tbody></table>
     <table id="example" class="display nowrap" style="width:100%">
@@ -46,12 +46,13 @@
               <th>Fee</th>
               <th>Month</th>
               <th>Given on Date</th>
+              <th></th>
             </tr>
         </thead>
         <tbody>
           {% for fee in fee %} {% if request.user == fee.customer.user %}
           <tr>
-            <td><a href="{% url 'print' fee.id %}">{{fee.customer}}</a></td>
+            <td>{{fee.customer}}</td>
             {% if fee.remaining_fee == 0 %}
             <td>{{fee.fee}}</td>
             {% else %}
@@ -59,6 +60,7 @@
             {% endif %}
             <td>{{fee.month}}</td>
             <td>{{fee.given_on_date}}</td>
+            <td><a href="{% url 'print' fee.id %}" class="btn btn-secondary"><i class="fa fa-pager"></i>Print Recipt</a></td>
           </tr>
           {% endif %} {% endfor %}
             
@@ -72,146 +74,30 @@
             </tr>
         </tfoot>
     </table>
-    </div> -->
-    <table>
-      <tbody><tr>
-          <td>To Date:</td>
-          <td><input type="text" id="toDate" data-plugin="datepicker" placeholder="To Date" onchange="selectDate()"></td>
-      </tr>
-      <tr>
-          <td>From Date:</td>
-          <td><input type="text" id="fromDate" data-plugin="datepicker" placeholder="From Date" onchange="selectDate()"></td>
-      </tr>
-  </tbody></table><table id="userTable" style="width:100%">
-      <thead>
-          <tr>
-              <th>Name</th>
-              <th>Age</th>
-              <th>Date of joining</th>
-          </tr>
-      </thead>
-      <tbody>
-          <tr>
-              <td>Tiger Nixon</td>
-              <td>61</td>
-              <td>28-02-2018</td>
-          </tr>
-          <tr>
-              <td>Garrett Winters</td>
-              <td>63</td>
-              <td>30-11-2017</td>
-          </tr>
-          <tr>
-              <td>Ashton Cox</td>
-              <td>66</td>
-              <td>28-02-2018</td>
-          </tr>
-          <tr>
-              <td>Cedric Kelly</td>
-              <td>22</td>
-              <td>31-03-2018</td>
-          </tr>
-          <tr>
-              <td>Airi Satou</td>
-              <td>33</td>
-              <td>31-03-2018</td>
-          </tr>
-          <tr>
-              <td>Brielle Williamson</td>
-              <td>61</td>
-              <td>28-02-2018</td>
-          </tr>
-          <tr>
-              <td>Herrod Chandler</td>
-              <td>59</td>
-              <td>31-03-2018</td>
-          </tr>
-          <tr>
-              <td>Rhona Davidson</td>
-              <td>55</td>
-              <td>30-04-2018</td>
-          </tr>
-          <tr>
-              <td>Colleen Hurst</td>
-              <td>39</td>
-              <td>31-05-2018</td>
-          </tr>
-          <tr>
-              <td>Sonya Frost</td>
-              <td>23</td>
-              <td>30-06-2018</td>
-          </tr>
-          <tr>
-              <td>Jena Gaines</td>
-              <td>30</td>
-              <td>31-07-2018</td>
-          </tr>
-      </tbody>
-  </table>
+    </div>
 {% endblock %}
 {% block script %}
-<!-- <script>
+<script>
   var minDate, maxDate;
  
- // Custom filtering function which will search data in column four between two values
- $.fn.dataTable.ext.search.push(
-     function( settings, data, dataIndex ) {
-         var min = minDate.val();
-         var max = maxDate.val();
-         var date = new Date( data[4] );
-  
-         if (
-             ( min === null && max === null ) ||
-             ( min === null && date <= max ) ||
-             ( min <= date   && max === null ) ||
-             ( min <= date   && date <= max )
-         ) {
-             return true;
-         }
-         return false;
-     }
- );
-  
- $(document).ready(function() {
-     // Create date inputs
-     minDate = new DateTime($('#min'), {
-         format: 'MMMM Do YYYY'
-     });
-     maxDate = new DateTime($('#max'), {
-         format: 'MMMM Do YYYY'
-     });
-  
-     // DataTables initialisation
-     var table = $('#example').DataTable();
-  
-     // Refilter the table
-     $('#min, #max').on('change', function () {
-         table.draw();
-     });
- });
-</script> -->
-<script>function selectDate() {
-  let table = $('#userTable').DataTable();
-  table.draw();
-}
-$(document).ready(function () {
-    $.fn.dataTable.ext.search.push( function( settings, data, dataIndex ) { 
-      let toDate = $('#toDate').val();
-      let fromDate = $('#fromDate').val();
-      let formatedToDate = toDate ? new Date(moment(toDate, "DD-MM-YYYY")) : '';
-      let formatedFromDate = fromDate ? new Date(moment(fromDate, "DD-MM-YYYY")) : '';
-      let dateField = data[2];
-      let formatedDateField = dateField ? new Date(moment(dateField, "DD-MM-YYYY")) : '';
-      if(formatedToDate && formatedFromDate && formatedDateField) {
-        return formatedToDate.getTime() <= formatedDateField.getTime() && formatedDateField.getTime() <= formatedFromDate.getTime()
-      } else if(formatedToDate && !formatedFromDate && formatedDateField) {
-        return formatedToDate.getTime() <= formatedDateField.getTime()
-      } else if(!formatedToDate && formatedFromDate && formatedDateField) {
-        return formatedDateField.getTime() <= formatedFromDate.getTime()
-      } else if(!formatedToDate && !formatedFromDate) {
-        return true
-      }
-      return false; 
-    });
-  });</script>
+// Custom filtering function which will search data in column four between two values
+$.fn.dataTable.ext.search.push(
+    function( settings, data, dataIndex ) {
+        var min = minDate.val();
+        var max = maxDate.val();
+        var date = new Date( data[4] );
+ 
+        if (
+            ( min === null && max === null ) ||
+            ( min === null && date <= max ) ||
+            ( min <= date   && max === null ) ||
+            ( min <= date   && date <= max )
+        ) {
+            return true;
+        }
+        return false;
+    }
+);
+ 
+</script>
 {% endblock %}
