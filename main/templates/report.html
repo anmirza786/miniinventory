@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block title %}Search{% endblock %} {% block navbar %}
+{% extends 'base.html' %} {% block title %}Report{% endblock %} {% block navbar %}
 <nav class="navbar navbar-expand-lg navbar-light container">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'home' %}">Smart Inven</a>
@@ -21,12 +21,12 @@
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="{% url 'search' %}"
+          <a class="nav-link" href="{% url 'search' %}"
             >Search & Add Customers</a
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'report' %}">Get Report</a>
+          <a class="nav-link active" href="{% url 'report' %}">Get Report</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'details' %}"
@@ -43,52 +43,62 @@
 {% endblock %} {% block content %}
 <div class="container">
   <div style="display: flex; justify-content: space-evenly" class="m-lg-4">
-    <form class="d-flex" action="{% url 'search' %}" method="get">
+    <form class="d-flex" action="{% url 'report' %}" method="get">
+      <label for="query" style="margin: 0px 5px;">From Date </label>
       <input
         class="form-control me-2"
-        type="text"
+        type="date"
         class="input"
-        placeholder="Search..."
+        placeholder="From Date"
         name="query"
       />
-      <button class="btn btn-outline-info" type="submit" style="width: 150px">
+      <label style="margin: 0px 5px;" for="query2">To Date </label>
+      <input
+        class="form-control me-2"
+        type="date"
+        class="input"
+        placeholder="To Date"
+        name="query2"
+      />
+      <button class="btn btn-outline-info" type="submit" style="width: 250px">
         <i class="fa fa-search"></i> Search
       </button>
     </form>
-    <a href="{% url 'addcustomer' %}" class="btn btn-primary"
-      ><i class="fa fa-book"></i> Add Customer</a
-    >
   </div>
   <div class="columns is-multiline mb-6">
-    <div class="column is-12 has-text-centered mt-6 mb-6">
-      <h3>Search term: "{{ query }}"</h3>
-    </div>
-    <table class="table table-striped">
+    <table id="myTable" class="display" style="width:100%">
       <thead>
         <tr>
           <th scope="col">Customer</th>
-          <th scope="col"></th>
-          <th scope="col"></th>
+          <th scope="col">Fee Got</th>
+          <th scope="col">Remaining</th>
+          <th scope="col">Month</th>
+          <th scope="col">Recieving Date</th>
         </tr>
       </thead>
       <tbody>
-        {% for customer in customers %}
+        {% for fee in fee %}
         <tr>
-          <td scope="row">{{customer.name}}</td>
-          <td scope="row">
-            <a class="btn btn-primary" href="{% url 'fee' customer.id %}"
-              ><i class="fa fa-add"></i> Add Fee/Payment</a
-            >
-          </td>
-          <td scope="row">
-            <a class="btn btn-danger" href="{% url 'delete' customer.id %}"
-              ><i class="fa fa-trash"></i> Delete Customer</a
-            >
-          </td>
+          <td scope="row">{{fee.customer}}</td>
+          <td scope="row">{{ fee.fee }}</td>
+          <td scope="row">{{ fee.remaining_fee }}</td>
+          <td scope="row">{{ fee.month }}</td>
+          <td scope="row">{{ fee.given_on_date }}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
+
 </div>
+{% endblock %}
+{% block script %}
+<script>
+  $(document).ready( function () {
+    $('#myTable').DataTable({
+      dom: 'Bfrtip',  
+      buttons: [ 'csv', 'excel' ]
+    } );
+} );
+</script>
 {% endblock %}

@@ -12,7 +12,9 @@ class Customers(models.Model):
                              null=False, verbose_name='Customer`s Phone Number')
     cnic = models.CharField(max_length=15, blank=False,
                             null=False, verbose_name='Customer`s CNIC')
-    user = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='user',
+                             on_delete=models.CASCADE)
+
     def __str__(self):
         return self.name
 
@@ -29,3 +31,11 @@ class Fee(models.Model):
     given_on_date = models.DateTimeField(
         auto_now_add=True, verbose_name='Fee`s Date')
 
+
+class Shop(models.Model):
+    shop_name = models.CharField(
+        max_length=20000, blank=False, null=False, verbose_name='Shop Name')
+    shop_details = models.TextField(
+        blank=False, null=False, verbose_name='Shop Details')
+    user = models.ForeignKey(
+        User, related_name='shopholder', on_delete=models.CASCADE,unique=True)

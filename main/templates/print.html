@@ -1,32 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body onload="printDiv('select')">
-<div id="select">Customer Name: {{ fee.customer.name }} <br>
-    Customer Phone Number: {{ fee.customer.phone }} <br>
-    Customer Cnic Number: {{ fee.customer.cnic }} <br>
-    Fee Paid: {{ fee.fee }} <br>
-    Fee Remaining: {{ fee.remaining_fee }} <br>
-    Fee Month: {{ fee.month }} <br>
-    Fee Giving Date: {{ fee.given_on_date }}</div>
-<script>
-  
-function printDiv(divName) {
-  var printContents = document.getElementById(divName).innerHTML;
-  var originalContents = document.body.innerHTML;
- 
-  document.body.innerHTML = printContents;
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice</title>
+  </head>
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+    table th {
+      border-right: 1px dashed black;
+    }
+    table th,
+    table td {
+      border-bottom: 1px solid black;
+      padding: 5px 20px;
+      border-collapse: collapse;
+    }
+  </style>
+  <body
+    style="display: flex; justify-content: center;align-items: center;"
+    onload="printDiv('select')"
+  >
+    <div id="select" style="width: 437px">
+      <h3 style="text-align: center">{{ shopdetails.shop_name }}</h3>
+      <p style="text-align: center">{{ shopdetails.shop_details }}</p>
+      <p>
+        ----------------------------------------------------------------------------------
+      </p>
+      <table style="text-align: left">
+        <tr>
+          <th>Customer's Name:</th>
 
-  window.print();
+          <td>{{ fee.customer.name }}</td>
+        </tr>
+        <tr>
+          <th>Customer's Phone Number:</th>
 
-  document.body.innerHTML = originalContents;
-//location.reload();
-}
-</script>
-</body>
+          <td>{{ fee.customer.phone }}</td>
+        </tr>
+        <tr>
+          <th>Customer's CNIC Number:</th>
+
+          <td>{{ fee.customer.cnic }}</td>
+        </tr>
+        <tr>
+          <th>Fee Month:</th>
+
+          <td>{{ fee.month }}</td>
+        </tr>
+        <tr>
+          <th>Fee Giving Date:</th>
+
+          <td>{{ fee.given_on_date }}</td>
+        </tr>
+        <tr>
+          <th>Fee Paid:</th>
+
+          <td>Rs. {{ fee.fee }}</td>
+        </tr>
+        <tr>
+          <th>Fee Remaining:</th>
+
+          <td>Rs. {{ fee.remaining_fee }}</td>
+        </tr>
+      </table>
+    </div>
+    <script>
+      function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+
+        window.print();
+
+        document.body.innerHTML = originalContents;
+        //location.reload();
+      }
+      function goBack() {
+        window.history.go(-1);
+      }
+    </script>
+  </body>
 </html>

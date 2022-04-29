@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block title %}Add Customer{% endblock %} {% block navbar %}
+{% extends 'base.html' %} {% block title %}Details{% endblock %} {% block navbar %}
 <nav class="navbar navbar-expand-lg navbar-light container">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'home' %}">Smart Inven</a>
@@ -21,7 +21,7 @@
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'search' %}"
+          <a class="nav-link active" href="{% url 'search' %}"
             >Search & Add Customers</a
           >
         </li>
@@ -29,7 +29,7 @@
           <a class="nav-link" href="{% url 'report' %}">Get Report</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'details' %}"
+          <a class="nav-link active" href="{% url 'details' %}"
             ><i class="fa fa-gear"></i> Details</a
           >
         </li>
@@ -41,11 +41,37 @@
   </div>
 </nav>
 {% endblock %} {% block content %}
-
 <div class="container">
-  <form action="." method="post">
-    {% csrf_token %} {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+  {% if not details %}
+  <a href="{% url 'add-details' %}" class="btn btn-primary"
+    ><i class="fa fa-add"></i> Add Details</a
+  >
+  <p style="color: red;">No Details Were Added.</p>
+  {% else %} 
+  <h2>Shop Details:</h2>
+  {% for detail in details %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Shop Name</th>
+        <th>Shop Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{detail.shop_name}}</td>
+        <td>{{detail.shop_details}}</td>
+      </tr>
+    </tbody>
+  </table>
+    
+    
+    
+  <a href="{% url 'edit-details' detail.id %}" class="btn btn-primary"
+  ><i class="fa fa-edit"></i> Edit Details</a
+  >
+  {% endfor %} 
+  {% endif %}
 </div>
+
 {% endblock %}

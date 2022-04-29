@@ -2,7 +2,7 @@ from django import forms
 from django.urls import path
 from django.contrib import admin
 from django.shortcuts import redirect, render
-from .models import Customers, Fee
+from .models import Customers, Fee, Shop
 import csv
 from django.http import HttpResponse
 # Register your models here.
@@ -64,3 +64,4 @@ class CustomerAdmin(admin.ModelAdmin, ExportCsvMixin):
 
 admin.site.register(Fee, FeeAdmin)
 admin.site.register(Customers, CustomerAdmin)
+admin.site.register(Shop)

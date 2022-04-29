@@ -1,5 +1,4 @@
-{% extends 'base.html' %} {% block title %} Fee Form{% endblock %} 
-{% block navbar %}
+{% extends 'base.html' %} {% block title %}Fee Form{% endblock %} {% block navbar %}
 <nav class="navbar navbar-expand-lg navbar-light container">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'home' %}">Smart Inven</a>
@@ -27,7 +26,12 @@
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'home' %}">Get Report</a>
+          <a class="nav-link" href="{% url 'report' %}">Get Report</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'details' %}"
+            ><i class="fa fa-gear"></i> Details</a
+          >
         </li>
         <li class="nav-item">
           <a class="btn btn-danger" href="{% url 'logout' %}">Logout</a>
@@ -67,9 +71,8 @@
         id="month"
       />
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit & Print</button>
   </form>
-  <button onclick="printDiv('select')">Print</button>
 </div>
 <script>
   $(function () {
@@ -78,20 +81,18 @@
     });
   });
 </script>
-{% endblock %}
-{% block script %}
+{% endblock %} {% block script %}
 <script>
-  
-function printDiv(divName) {
-  var printContents = document.getElementById(divName).innerHTML;
-  var originalContents = document.body.innerHTML;
- 
-  document.body.innerHTML = printContents;
+  function printDiv(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
 
-  window.print();
+    document.body.innerHTML = printContents;
 
-  document.body.innerHTML = originalContents;
-//location.reload();
-}
+    window.print();
+
+    document.body.innerHTML = originalContents;
+    //location.reload();
+  }
 </script>
 {% endblock %}
