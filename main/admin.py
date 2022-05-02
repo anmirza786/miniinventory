@@ -2,7 +2,7 @@ from django import forms
 from django.urls import path
 from django.contrib import admin
 from django.shortcuts import redirect, render
-from .models import Customers, Fee, Shop
+from .models import Area, Customers, Fee, Shop, SubArea, Subuser
 import csv
 from django.http import HttpResponse
 # Register your models here.
@@ -28,9 +28,15 @@ class ExportCsvMixin:
         export_as_csv.short_description = "Export Selected"
 
 
+class ShopAdmin(admin.ModelAdmin):
+    list_display = [ 'shop_name',
+                    'shop_contact', 'shop_details', 'user']
+    
+
+
 class FeeAdmin(admin.ModelAdmin, ExportCsvMixin):
-    list_display = ["customer", "fee", "remaining_fee",
-                    "month", 'given_on_date']
+    list_display = ["customer", "fee_paid", 'fee_status', "debit", "credit",
+                    "month", 'given_on_date', 'taken_by']
     list_filter = ['month']
     actions = ["export_as_csv"]
 
@@ -57,11 +63,19 @@ class FeeAdmin(admin.ModelAdmin, ExportCsvMixin):
 
 
 class CustomerAdmin(admin.ModelAdmin, ExportCsvMixin):
-    list_display = ["name", "phone", "cnic", 'user']
+    list_display = ["name", "phone", "address", 'customer_status', 'user',
+                    'area', 'subarea', 'customer_fee_assigned', 'assigned_to_subuser']
     # list_filter = ['month']
     actions = ["export_as_csv"]
-
-
+class AreaAdmin(admin.ModelAdmin):
+    list_display = ['area_name','area_user']
+class SubAreaAdmin(admin.ModelAdmin):
+    list_display = ['area','subarea_name']
+class SubuserAdmin(admin.ModelAdmin):
+    list_display = ['name','created_by']
 admin.site.register(Fee, FeeAdmin)
 admin.site.register(Customers, CustomerAdmin)
-admin.site.register(Shop)
+admin.site.register(Shop,ShopAdmin)
+admin.site.register(Area,AreaAdmin)
+admin.site.register(SubArea,SubAreaAdmin)
+admin.site.register(Subuser,SubuserAdmin)

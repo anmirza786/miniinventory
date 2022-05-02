@@ -26,7 +26,7 @@
   >
     <div id="select" style="width: 437px">
       <h3 style="text-align: center">{{ shopdetails.shop_name }}</h3>
-      <p style="text-align: center">{{ shopdetails.shop_details }}</p>
+      <p style="text-align: center">{{ shopdetails.contact }}</p>
       <p>
         ----------------------------------------------------------------------------------
       </p>
@@ -67,6 +67,11 @@
           <td>Rs. {{ fee.remaining_fee }}</td>
         </tr>
       </table>
+      <p>
+        ----------------------------------------------------------------------------------
+      </p>
+      <p style="text-align: center">{{ shopdetails.shop_details }}</p>
+      <div>{{svg|safe}}</div>
     </div>
     <script>
       function printDiv(divName) {

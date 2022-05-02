@@ -75,6 +75,8 @@
         {% for customer in customers %}
         <tr>
           <td scope="row">{{customer.name}}</td>
+          <td scope="row">{{customer.phone}}</td>
+          <td scope="row">{{customer.cnic}}</td>
           <td scope="row">
             <a class="btn btn-primary" href="{% url 'fee' customer.id %}"
               ><i class="fa fa-add"></i> Add Fee/Payment</a
