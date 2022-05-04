@@ -1,29 +1,77 @@
 from email import message
 from django.shortcuts import redirect, render
-from main.forms import CustomerFeeForm, CustomerForm, ShopForm
+from main.forms import CustomerFeeForm, CustomerForm, ShopForm, UserRegistrationForm
 from django.db.models import Q
-from main.models import Customers, Fee, Shop
+from main.models import Area, Customers, Fee, Shop, Subuser
 from django.contrib.auth.decorators import login_required
 import time
 from io import BytesIO
 import qrcode
 import qrcode.image.svg
+from datetime import date
 # Create your views here.
 
 
 @login_required
 def home(request):
-    fee = Fee.objects.all()
-    return render(request, 'home.html', {'fee': fee})
+    # fee = Fee.objects.all()
+    customer_active = Customers.objects.filter(
+        customer_status='Active').count()
+    total_customer = Customers.objects.all().count()
+    customer_disabled = total_customer-customer_active
 
+    return render(request, 'home.html', {'customer_active': customer_active, 'total_customer': total_customer, 'customer_disabled': customer_disabled})
+
+
+@login_required
+def show_subusers(request):
+    subuser = Subuser.objects.all()
+    return render(request,'subusers.html', {'subuser': subuser})
+@login_required
+def add_subusers(request):
+    user = request.user
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+
+        if form.is_valid():
+            users = form.save()
+            subuser = Subuser.objects.create(name=users.username, created_by=user)
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'add_customer.html', {'form': form})
 
 @login_required
 def search(request):
     query = request.GET.get('query', '')
-    customers = Customers.objects.filter(
-        Q(name__icontains=query) | Q(phone__icontains=query) | Q(address__icontains=query) | Q(customer_id__icontains=query))
+    user = request.user.username
+    subuser = Subuser.objects.get(name=user)
+    # user = user.username
+    if not subuser:
+        customers = Customers.objects.filter(
+            Q(name__icontains=query) | Q(phone__icontains=query) | Q(address__icontains=query) | Q(customer_id__icontains=query))
+    else:
+        area = Area.objects.get(area_user=subuser)
+        customers = Customers.objects.filter(
+            Q(name__icontains=query) | Q(phone__icontains=query) | Q(address__icontains=query) | Q(customer_id__icontains=query)).filter(area=area)
 
     return render(request, 'search.html', {'customers': customers, 'query': query})
+
+
+@login_required
+def edit_customer(request, pk):
+    user = request.user
+    customer = Customers.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = CustomerForm(request.POST, instance=customer)
+
+        if form.is_valid():
+            custom = form.save(commit=False)
+            custom.user = user
+            custom.save()
+            return redirect('search')
+    else:
+        form = CustomerForm(instance=customer)
+    return render(request, 'edit_customer.html', {'form': form})
 
 
 @login_required
@@ -86,12 +134,22 @@ def edit_shopdetails(request, pk):
 def show_details(request):
     user = request.user
     details = Shop.objects.filter(user=user)
+    if not details:
+        subuser = Subuser.objects.filter(name=user.username)
+        if not subuser:
+            details = Shop.objects.filter(user=user)
+        else:
+            subuser = Subuser.objects.filter(name=user.username)[:1].get()
+            user = subuser.created_by
+            details = Shop.objects.filter(user=user)
+
     return render(request, 'details.html', {'details': details})
 
 
 @login_required
 def fee(request, pk):
     customer = Customers.objects.get(pk=pk)
+    user = request.user
     if request.method == 'POST':
         form = CustomerFeeForm(request.POST)
         month = request.POST['month']
@@ -99,6 +157,7 @@ def fee(request, pk):
             fee = form.save(commit=False)
             fee.customer = customer
             fee.month = month
+            fee.taken_by = user
             fee.save()
             return redirect('print', fee.id)
     else:
@@ -127,7 +186,10 @@ def print(request, pk):
 
 @login_required
 def generatereport(request):
+    Date = date.today()
+    Date = Date.strftime("%Y-%m-%d")
     query = request.GET.get('query', '2000-01-01')
-    query2 = request.GET.get('query2', '2000-12-30')
+    query2 = request.GET.get('query2', Date)
+
     fee = Fee.objects.filter(month__range=[query, query2])
     return render(request, 'report.html', {'fee': fee})

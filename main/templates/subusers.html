@@ -43,65 +43,26 @@
 {% endblock %} {% block content %}
 <div class="container">
   <div style="display: flex; justify-content: space-evenly" class="m-lg-4">
-    <form class="d-flex" action="{% url 'search' %}" method="get">
-      <input
-        class="form-control me-2"
-        type="text"
-        class="input"
-        placeholder="Search..."
-        name="query"
-      />
-      <button class="btn btn-outline-info" type="submit" style="width: 150px">
-        <i class="fa fa-search"></i> Search
-      </button>
-    </form>
     <a href="{% url 'addcustomer' %}" class="btn btn-primary"
-      ><i class="fa fa-book"></i> Add Customer</a
+      ><i class="fa fa-book"></i> Add Subusers</a
     >
   </div>
   <div class="columns is-multiline mb-6">
-    <div class="column is-12 has-text-centered mt-6 mb-6">
-      <h3>Search term: "{{ query }}"</h3>
-    </div>
+    
     <table class="table table-striped">
       <thead>
         <tr>
-          <th scope="col">Customer</th>
+          <th scope="col">User</th>
           <th scope="col"></th>
           <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
-        {% for customer in customers %}
+        {% for User in subuser %}
         <tr>
-          <td scope="row">{{customer.name}}</td>
-          <td scope="row">{{customer.phone}}</td>
-          <td scope="row">{{customer.customer_id}}</td>
-          {% if customer.customer_status == 'Disabled' %}
-          <td scope="row">
-            <a class="btn btn-secondary disabled" href="{% url 'fee' customer.id %}"
-              >Activate The Customer</a
-            >
-          </td>
-          {% else %}
-          <td scope="row">
-            <a class="btn btn-primary" href="{% url 'fee' customer.id %}"
-              ><i class="fa fa-add"></i> Add Fee/Payment</a
-            >
-          </td>
-          {% endif %}
-          <!-- 
-          <td scope="row">
-            <a class="btn btn-danger" href="{% url 'delete' customer.id %}"
-              ><i class="fa fa-trash"></i> Delete Customer</a
-            >
-          </td>
-          -->
-          <td scope="row">
-            <a class="btn btn-info" href="{% url 'edit_customer' customer.id %}"
-              ><i class="fa fa-edit"></i> Edit Customer</a
-            >
-          </td>
+          <td scope="row">{{User.name}}</td>
+          <td scope="row">{{User.created_at}}</td>
+          <td scope="row">{{User.created_by}}</td>
         </tr>
         {% endfor %}
       </tbody>

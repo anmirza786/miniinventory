@@ -26,7 +26,7 @@
   >
     <div id="select" style="width: 437px">
       <h3 style="text-align: center">{{ shopdetails.shop_name }}</h3>
-      <p style="text-align: center">{{ shopdetails.contact }}</p>
+      <p style="text-align: center">{{ shopdetails.shop_contact }}</p>
       <p>
         ----------------------------------------------------------------------------------
       </p>
@@ -42,9 +42,19 @@
           <td>{{ fee.customer.phone }}</td>
         </tr>
         <tr>
-          <th>Customer's CNIC Number:</th>
+          <th>Customer's Address:</th>
 
-          <td>{{ fee.customer.cnic }}</td>
+          <td>{{ fee.customer.address }}</td>
+        </tr>
+        <tr>
+          <th>Customer's Area:</th>
+
+          <td>{{ fee.customer.area }}</td>
+        </tr>
+        <tr>
+          <th>Customer's Sub-Area:</th>
+
+          <td>{{ fee.customer.subarea }}</td>
         </tr>
         <tr>
           <th>Fee Month:</th>
@@ -58,20 +68,32 @@
         </tr>
         <tr>
           <th>Fee Paid:</th>
-
-          <td>Rs. {{ fee.fee }}</td>
+          <td>Rs. {{ fee.fee_paid }}</td>
         </tr>
         <tr>
-          <th>Fee Remaining:</th>
+          <th>Debit:</th>
 
-          <td>Rs. {{ fee.remaining_fee }}</td>
+          <td>Rs. {{ fee.debit }}</td>
+        </tr>
+        <tr>
+          <th>Credit:</th>
+
+          <td>Rs. {{ fee.credit }}</td>
+        </tr>
+        <tr>
+          <th>Taken By:</th>
+
+          <td>Rs. {{ fee.taken_by }}</td>
         </tr>
       </table>
       <p>
         ----------------------------------------------------------------------------------
       </p>
+      <div style="align-items: center;justify-content: center; display: flex; width: 437px;"  >{{svg|safe}}</div>
       <p style="text-align: center">{{ shopdetails.shop_details }}</p>
-      <div>{{svg|safe}}</div>
+      <p>
+        ----------------------------------------------------------------------------------
+      </p>
     </div>
     <script>
       function printDiv(divName) {
