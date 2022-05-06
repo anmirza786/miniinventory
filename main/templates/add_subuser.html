@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block title %}Search{% endblock %} {% block navbar %}
+{% extends 'base.html' %} {% block title %}Add Customer{% endblock %} {% block navbar %}
 <nav class="navbar navbar-expand-lg navbar-light container">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'home' %}">Smart Inven</a>
@@ -21,7 +21,7 @@
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="{% url 'search' %}"
+          <a class="nav-link" href="{% url 'search' %}"
             >Search & Add Customers</a
           >
         </li>
@@ -41,45 +41,11 @@
   </div>
 </nav>
 {% endblock %} {% block content %}
+
 <div class="container">
-  <div style="display: flex; justify-content: space-evenly" class="m-lg-4">
-    <a href="{% url 'add_subusers' %}" class="btn btn-primary"
-      ><i class="fa fa-book"></i> Add Subusers</a
-    >
-  </div>
-  <div class="columns is-multiline mb-6">
-    
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">User</th>
-          <th scope="col"></th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for User in subuser %}
-        <tr>
-          <td scope="row">{{User.name}}</td>
-          <td scope="row">{{User.created_at}}</td>
-          <td scope="row">{{User.created_by}}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+  <form action="." method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
 </div>
-{% endblock %}
-{% block script %}
-<script type="text/javascript">
-  $(document).ready(function() {
-      $('#checkbox').change(function() {
-          $.post("/toggle/", {
-              id: '{{workexperiance.id}}', 
-              isworking: this.checked, 
-              csrfmiddlewaretoken: '{{ csrf_token }}' 
-          });
-      });
-  }); 
-  </script>
 {% endblock %}

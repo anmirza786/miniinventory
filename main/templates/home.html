@@ -33,9 +33,18 @@
             ><i class="fa fa-gear"></i> Details</a
           >
         </li>
+        {% if request.user.is_authenticated %}
+        {% if not request.user.subuser %}
+        <div>{{ request.user.subuser }}</div>
+        {% elif request.user %}
+        <li class="nav-item" style="margin-right: 10px;">
+          <a class="btn btn-primary" href="{% url 'show_subusers' %}">Subuser</a>
+        </li>
+        {% endif %}
         <li class="nav-item">
           <a class="btn btn-danger" href="{% url 'logout' %}">Logout</a>
         </li>
+        {% endif %}
       </ul>
     </div>
   </div>

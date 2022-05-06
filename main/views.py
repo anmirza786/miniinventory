@@ -26,19 +26,27 @@ def home(request):
 @login_required
 def show_subusers(request):
     subuser = Subuser.objects.all()
-    return render(request,'subusers.html', {'subuser': subuser})
+    return render(request, 'subusers.html', {'subuser': subuser})
+
+
 @login_required
 def add_subusers(request):
     user = request.user
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
+    suser = Subuser.objects.filter(name=user.username)
+    if not suser:
+        if request.method == 'POST':
+            form = UserRegistrationForm(request.POST)
 
-        if form.is_valid():
-            users = form.save()
-            subuser = Subuser.objects.create(name=users.username, created_by=user)
+            if form.is_valid():
+                users = form.save()
+                subuser = Subuser.objects.create(
+                    name=users.username, created_by=user)
+        else:
+            form = UserRegistrationForm()
     else:
-        form = UserRegistrationForm()
-    return render(request, 'add_customer.html', {'form': form})
+        return redirect('home')
+    return render(request, 'add_subuser.html', {'form': form})
+
 
 @login_required
 def search(request):
@@ -51,8 +59,11 @@ def search(request):
             Q(name__icontains=query) | Q(phone__icontains=query) | Q(address__icontains=query) | Q(customer_id__icontains=query))
     else:
         area = Area.objects.get(area_user=subuser)
-        customers = Customers.objects.filter(
-            Q(name__icontains=query) | Q(phone__icontains=query) | Q(address__icontains=query) | Q(customer_id__icontains=query)).filter(area=area)
+        if not area:
+            return redirect('home')
+        else:
+            customers = Customers.objects.filter(
+                Q(name__icontains=query) | Q(phone__icontains=query) | Q(address__icontains=query) | Q(customer_id__icontains=query)).filter(area=area)
 
     return render(request, 'search.html', {'customers': customers, 'query': query})
 
