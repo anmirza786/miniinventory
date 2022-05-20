@@ -1,4 +1,5 @@
-{% extends 'base.html' %} {% block title %}Fee Form{% endblock %} {% block navbar %}
+{% extends 'base.html' %} {% load widget_tweaks %} {% block title %}Fee Form
+{% endblock %} {% block navbar %}
 <nav class="navbar navbar-expand-lg navbar-light container">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'home' %}">Smart Inven</a>
@@ -26,16 +27,37 @@
           >
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="{% url 'search-and-print' %}"
+            >Search & Print</a
+          >
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="{% url 'report' %}">Get Report</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'monthly_report' %}"
+            >Get Monthly Report</a
+          >
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'details' %}"
             ><i class="fa fa-gear"></i> Details</a
           >
         </li>
+        {% if request.user.is_authenticated %} {% if request.user.is_staff %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'area' %}">Areas</a>
+        </li>
+        <li class="nav-item" style="margin-right: 10px">
+          <a class="btn btn-primary" href="{% url 'show_subusers' %}"
+            >Subuser</a
+          >
+        </li>
+        {% endif %}
         <li class="nav-item">
           <a class="btn btn-danger" href="{% url 'logout' %}">Logout</a>
         </li>
+        {% endif %}
       </ul>
     </div>
   </div>
@@ -55,24 +77,42 @@
   >
     <div>Customer Name : {{ customer.name }}</div>
     <div>Customer's Phone Number : {{ customer.phone }}</div>
-    <div>Customer's CNIC Number : {{ customer.cnic }}</div>
+    <div>Customer's Fee : {{ customer.customer_fee_assigned }}</div>
   </div>
-  <form method="post" id="select">
-    {% csrf_token %} {{ form.as_p }}
-    <div class="input-group mb-3">
-      <span class="input-group-text" id="basic-addon1">Select Month</span>
-      <input
-        type="date"
-        class="form-control"
-        placeholder="month"
-        aria-label="month"
-        aria-describedby="basic-addon1"
-        name="month"
-        id="month"
-      />
-    </div>
-    <button type="submit" class="btn btn-primary">Submit & Print</button>
-  </form>
+  <div
+  class="container"
+  style="
+  display: flex;
+  flex-direction: column;
+  margin: 50px;
+  justify-content: center;
+  align-items: center;
+  "
+  >
+  {% if not pFee %}
+  {% else %}
+  <div style=" font-weight: bold;"><p>Previous Debit: {{pFee.debit}}</p>
+    <tr>
+  <p>Previous Credit: {{pFee.credit}}</p>
+  </div>
+  {% endif %}
+    <form method="post" style="max-width: 500px">
+      {% csrf_token %} {% for field in form.visible_fields %}
+      <div class="form-group">
+        <label class="form-label">{{ field.label_tag }}</label>
+        {% render_field field class="form-control" %}
+
+        <small class="form-text text-muted">{{ field.help_text }}</small><br />
+        {% if field.errors %}
+        <small class="form-text" style="color: red"
+          >{{ field.help_text }}</small
+        >
+        {% endif %}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
 </div>
 <script>
   $(function () {

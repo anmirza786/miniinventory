@@ -26,16 +26,37 @@
           >
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="{% url 'search-and-print' %}"
+            >Search & Print</a
+          >
+        </li>
+        <li class="nav-item">
           <a class="nav-link active" href="{% url 'report' %}">Get Report</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'monthly_report' %}"
+            >Get Monthly Report</a
+          >
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'details' %}"
             ><i class="fa fa-gear"></i> Details</a
           >
         </li>
+        {% if request.user.is_authenticated %} {% if request.user.is_staff %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'area' %}">Areas</a>
+        </li>
+        <li class="nav-item" style="margin-right: 10px">
+          <a class="btn btn-primary" href="{% url 'show_subusers' %}"
+            >Subuser</a
+          >
+        </li>
+        {% endif %}
         <li class="nav-item">
           <a class="btn btn-danger" href="{% url 'logout' %}">Logout</a>
         </li>
+        {% endif %}
       </ul>
     </div>
   </div>
@@ -44,7 +65,7 @@
 <div class="container">
   <div style="display: flex; justify-content: space-evenly" class="m-lg-4">
     <form class="d-flex" action="{% url 'report' %}" method="get">
-      <label for="query" style="margin: 0px 5px;">From Date </label>
+      <label for="query" style="margin: 0px 5px">From Date </label>
       <input
         class="form-control me-2"
         type="date"
@@ -52,7 +73,7 @@
         placeholder="From Date"
         name="query"
       />
-      <label style="margin: 0px 5px;" for="query2">To Date </label>
+      <label style="margin: 0px 5px" for="query2">To Date </label>
       <input
         class="form-control me-2"
         type="date"
@@ -66,41 +87,47 @@
     </form>
   </div>
   <div class="columns is-multiline mb-6">
-    
-    <table id="myTable" class="display" style="width:100%">
+    <table id="myTable" class="display" style="width: 100%">
       <thead>
         <tr>
           <th scope="col">Customer</th>
-          <th scope="col">Fee Got</th>
-          <th scope="col">Remaining</th>
+          <th scope="col">Fee Paid</th>
+          <th scope="col">Fee Status</th>
+          <th scope="col">Debit</th>
+          <th scope="col">Credit</th>
           <th scope="col">Month</th>
-          <th scope="col">Recieving Date</th>
+          <th scope="col">Cashier</th>
         </tr>
       </thead>
       <tbody>
         {% for fee in fee %}
         <tr>
           <td scope="row">{{fee.customer}}</td>
-          <td scope="row">{{ fee.fee }}</td>
-          <td scope="row">{{ fee.remaining_fee }}</td>
-          <td scope="row">{{ fee.month }}</td>
-          <td scope="row">{{ fee.given_on_date }}</td>
+          <td scope="row">{{ fee.fee_paid }}</td>
+          {% if fee.fee_status == "paid" %}
+          <td scope="row"><span>{{ fee.fee_status }}</span></td>
+          {% else %}
+          <td scope="row">
+            <span style="color: #ffcc00">{{ fee.fee_status }}</span>
+          </td>
+          {% endif%}
+          <td scope="row">{{ fee.debit }}</td>
+          <td scope="row">{{ fee.credit }}</td>
+          <td scope="row">{{ fee.Month }}</td>
+          <td scope="row">{{ fee.taken_by }}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
-    
   </div>
-
 </div>
-{% endblock %}
-{% block script %}
+{% endblock %} {% block script %}
 <script>
-  $(document).ready( function () {
-    $('#myTable').DataTable({
-      dom: 'Bfrtip',  
-      buttons: [ 'csv', 'excel' ]
-    } );
-} );
+  $(document).ready(function () {
+    $("#myTable").DataTable({
+      dom: "Bfrtip",
+      buttons: ["csv", "excel"],
+    });
+  });
 </script>
 {% endblock %}

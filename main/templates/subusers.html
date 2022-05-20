@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block title %}Search{% endblock %} {% block navbar %}
+{% extends 'base.html' %} {% block title %}Subusers{% endblock %} {% block navbar %}
 <nav class="navbar navbar-expand-lg navbar-light container">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'home' %}">Smart Inven</a>
@@ -21,21 +21,42 @@
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="{% url 'search' %}"
+          <a class="nav-link" href="{% url 'search' %}"
             >Search & Add Customers</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'search-and-print' %}"
+            >Search & Print</a
           >
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'report' %}">Get Report</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="{% url 'monthly_report' %}"
+            >Get Monthly Report</a
+          >
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="{% url 'details' %}"
             ><i class="fa fa-gear"></i> Details</a
           >
         </li>
+        {% if request.user.is_authenticated %} {% if request.user.is_staff %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'area' %}">Areas</a>
+        </li>
+        <li class="nav-item" style="margin-right: 10px">
+          <a class="btn btn-primary" href="{% url 'show_subusers' %}"
+            >Subuser</a
+          >
+        </li>
+        {% endif %}
         <li class="nav-item">
           <a class="btn btn-danger" href="{% url 'logout' %}">Logout</a>
         </li>
+        {% endif %}
       </ul>
     </div>
   </div>
@@ -48,7 +69,6 @@
     >
   </div>
   <div class="columns is-multiline mb-6">
-    
     <table class="table table-striped">
       <thead>
         <tr>
@@ -69,17 +89,16 @@
     </table>
   </div>
 </div>
-{% endblock %}
-{% block script %}
+{% endblock %} {% block script %}
 <script type="text/javascript">
-  $(document).ready(function() {
-      $('#checkbox').change(function() {
-          $.post("/toggle/", {
-              id: '{{workexperiance.id}}', 
-              isworking: this.checked, 
-              csrfmiddlewaretoken: '{{ csrf_token }}' 
-          });
+  $(document).ready(function () {
+    $("#checkbox").change(function () {
+      $.post("/toggle/", {
+        id: "{{workexperiance.id}}",
+        isworking: this.checked,
+        csrfmiddlewaretoken: "{{ csrf_token }}",
       });
-  }); 
-  </script>
+    });
+  });
+</script>
 {% endblock %}

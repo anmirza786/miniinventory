@@ -1,0 +1,107 @@
+{% extends 'base.html' %} {% block title %}active Customers{% endblock %} {% block navbar%}
+<nav class="navbar navbar-expand-lg navbar-light container">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'home' %}">Smart Inven</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="{% url 'home' %}"
+            >Home</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'search' %}"
+            >Search & Add Customers</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'search-and-print' %}"
+            >Search & Print</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'report' %}">Get Report</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'monthly_report' %}"
+            >Get Monthly Report</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'details' %}"
+            ><i class="fa fa-gear"></i> Details</a
+          >
+        </li>
+        {% if request.user.is_authenticated %} {% if request.user.is_staff %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'area' %}">Areas</a>
+        </li>
+        <li class="nav-item" style="margin-right: 10px">
+          <a class="btn btn-primary" href="{% url 'show_subusers' %}"
+            >Subuser</a
+          >
+        </li>
+        {% endif %}
+        <li class="nav-item">
+          <a class="btn btn-danger" href="{% url 'logout' %}">Logout</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+{% endblock %} {% block content %}
+<div class="container">
+  <div class="columns is-multiline mb-6" style="margin-top: 50px">
+    <table id="myTable" class="display" style="width: 100%">
+      <thead>
+        <tr>
+          <th scope="col">Customer</th>
+          <th scope="col">Customer ID</th>
+          <th scope="col">Customer Status</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Area</th>
+          <th scope="col">Sub-Area</th>
+          <th scope="col">Address</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for customer_notpaid in customer_notpaid %}
+        <tr>
+          <td scope="row">{{customer_notpaid.name}}</td>
+          <td scope="row">{{customer_notpaid.customer_id}}</td>
+          <td scope="row">{{customer_notpaid.customer_status}}</td>
+          <td scope="row">{{ customer_notpaid.phone }}</td>
+          <td scope="row">{{ customer_notpaid.area }}</td>
+          <td scope="row">{{customer_notpaid.subarea}}</td>
+          <td scope="row">{{ customer_notpaid.address }}</td>
+          {% comment %}
+          <td scope="row">{{ customer_notpaid.given_on_date }}</td>
+          {% endcomment %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %} {% block script %}
+<script>
+  $(document).ready(function () {
+    $("#myTable").DataTable({
+      dom: "Bfrtip",
+      buttons: ["csv", "excel"],
+    });
+  });
+</script>
+{% endblock %}

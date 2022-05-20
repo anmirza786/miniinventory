@@ -1,18 +1,24 @@
 {% extends 'base.html' %}
+
+{% load widget_tweaks %}
 {% block title %}Login{% endblock %}
 {% block content %}
-<div class="container">
-  <div class="row" style="align-items: center; justify-content: center">
-    <div class="col-lg-6">
-      <div class="box-element">
-        <h1 class="title" style="text-align: center">Log in</h1>
-        <form method="post">
-          {% csrf_token %} 
-          {{form.as_p}}
-            <button type="submit" class="btn btn-primary" style="margin-top: 15px">Log in</button>
-        </form>
-      </div>
-    </div>
-  </div>
+<div class="container" style="display: flex; flex-direction: column; margin: 50px; justify-content: center; align-items: center;">
+  <form method="post" style="max-width: 500px">
+      <img src="/media/3starcable.PNG" width="200" height="100">
+    {% csrf_token %}
+    {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        <label class="form-label">{{ field.label_tag }}</label>
+                        {% render_field field class="form-control" %}
+
+                        <small class="form-text text-muted">{{ field.help_text }}</small><br>
+                        {% if field.errors %}
+                        <small class="form-text" style="color: red;">{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
 </div>
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block title %}Home {% endblock %} {% block navbar %}
 <nav class="navbar navbar-expand-lg navbar-light container">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'home' %}">Smart Inven</a>
+    <a class="navbar-brand" href="{% url 'home' %}">3 Star Cable Billing <b> Hi! {{request.user}}</b></b></a>
     <button
       class="navbar-toggler"
       type="button"
@@ -26,19 +26,31 @@
           >
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="{% url 'search-and-print' %}"
+            >Search & Print</a
+          >
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="{% url 'report' %}">Get Report</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'monthly_report' %}"
+            >Get Monthly Report</a
+          >
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'details' %}"
             ><i class="fa fa-gear"></i> Details</a
           >
         </li>
-        {% if request.user.is_authenticated %}
-        {% if not request.user.subuser %}
-        <div>{{ request.user.subuser }}</div>
-        {% elif request.user %}
-        <li class="nav-item" style="margin-right: 10px;">
-          <a class="btn btn-primary" href="{% url 'show_subusers' %}">Subuser</a>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'area' %}">Areas</a>
+        </li>
+        {% if request.user.is_authenticated %} {% if request.user.is_staff %}
+        <li class="nav-item" style="margin-right: 10px">
+          <a class="btn btn-primary" href="{% url 'show_subusers' %}"
+            >Subuser</a
+          >
         </li>
         {% endif %}
         <li class="nav-item">
@@ -53,45 +65,86 @@
 <div class="container">
   <div class="row m-4" style="justify-content: space-between; flex-wrap: wrap">
     <div class="col">
-      <div
-        style="
-          width: 200px;
-          height: 50px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        "
-        class="m-4 btn btn-outline-success"
-      >
-        Active Customers : {{ customer_active }}
-      </div>
+      <a href="{% url 'active_customer' %}" style="text-decoration: none">
+        <div
+          style="
+            width: 200px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          "
+          class="m-4 btn btn-outline-success"
+        >
+          Active Customers : {{ customer_active }}
+        </div>
+      </a>
     </div>
     <div class="col">
-      <div
-        style="
-          width: 200px;
-          height: 50px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        "
-        class="m-4 btn btn-outline-secondary"
-      >
-        Disabled Customers : {{ customer_disabled }}
-      </div>
+      <a href="{% url 'disabled_customer' %}" style="text-decoration: none">
+        <div
+          style="
+            width: 200px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          "
+          class="m-4 btn btn-outline-secondary"
+        >
+          Disabled Customers : {{ customer_disabled }}
+        </div>
+      </a>
     </div>
     <div class="col">
-      <div
-        style="
-          width: 200px;
-          height: 50px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        "
-        class="m-4 btn btn-outline-info"
-      >
-        Total Customers : {{ total_customer }}
+      <a href="{% url 'total_customer' %}" style="text-decoration: none">
+        <div
+          style="
+            width: 200px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          "
+          class="m-4 btn btn-outline-info"
+        >
+          Total Customers : {{ total_customer }}
+        </div>
+      </a>
+    </div>
+    <div class="col">
+      <a href="{% url 'paid_customer' %}" style="text-decoration: none">
+        <div
+          style="
+            width: 200px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          "
+          class="m-4 btn btn-outline-info"
+        >
+          Total Paid Customers : {{ customer_paid }}
+        </div>
+      </a>
+    </div>
+      <div class="col">
+      <a href="{% url 'notpaid_customer' %}" style="text-decoration: none">
+          <div
+            style="
+              width: 200px;
+              height: 50px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            "
+            class="m-4 btn btn-outline-info"
+          >
+            Non Paid Customers : {{ not_paid }}
+          </div>
+        </a>
+      </div>
+      <div class="col">
       </div>
     </div>
   </div>

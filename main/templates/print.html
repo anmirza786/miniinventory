@@ -7,6 +7,9 @@
     <title>Invoice</title>
   </head>
   <style>
+    body {
+      font-size: 0.8rem;
+    }
     table {
       border-collapse: collapse;
     }
@@ -19,33 +22,44 @@
       padding: 5px 20px;
       border-collapse: collapse;
     }
+    @media print and (width: 3in) {
+      @page {
+        margin: 0.5in;
+      }
+    }
   </style>
   <body
-    style="display: flex; justify-content: center;align-items: center;"
+    style="display: flex; justify-content: center; align-items: center"
     onload="printDiv('select')"
   >
-    <div id="select" style="width: 437px">
+    <div id="select" style="max-width: 437px">
       <h3 style="text-align: center">{{ shopdetails.shop_name }}</h3>
-      <p style="text-align: center">{{ shopdetails.shop_contact }}</p>
-      <p>
-        ----------------------------------------------------------------------------------
+      <p style="text-align: center; word-spacing: -1px">
+        {{ shopdetails.shop_contact }}
       </p>
+      <p>------------------------------------------------</p>
       <table style="text-align: left">
         <tr>
-          <th>Customer's Name:</th>
+          <th>Name:</th>
 
           <td>{{ fee.customer.name }}</td>
         </tr>
         <tr>
-          <th>Customer's Phone Number:</th>
+          <th>ID:</th>
+
+          <td>{{ fee.customer.customer_id }}</td>
+        </tr>
+        <tr>
+          <th>Phone:</th>
 
           <td>{{ fee.customer.phone }}</td>
         </tr>
         <tr>
-          <th>Customer's Address:</th>
+          <th>Address:</th>
 
           <td>{{ fee.customer.address }}</td>
         </tr>
+        {% comment %}
         <tr>
           <th>Customer's Area:</th>
 
@@ -56,13 +70,14 @@
 
           <td>{{ fee.customer.subarea }}</td>
         </tr>
-        <tr>
+        {% endcomment %}
+        {% comment %} <tr>
           <th>Fee Month:</th>
 
-          <td>{{ fee.month }}</td>
-        </tr>
+          <td>{{ fee.Month }}</td>
+        </tr> {% endcomment %}
         <tr>
-          <th>Fee Giving Date:</th>
+          <th>Fee Date:</th>
 
           <td>{{ fee.given_on_date }}</td>
         </tr>
@@ -81,19 +96,28 @@
           <td>Rs. {{ fee.credit }}</td>
         </tr>
         <tr>
-          <th>Taken By:</th>
+          <th>Cashier Name:</th>
 
-          <td>Rs. {{ fee.taken_by }}</td>
+          <td>{{ fee.taken_by }}</td>
         </tr>
       </table>
-      <p>
-        ----------------------------------------------------------------------------------
-      </p>
-      <div style="align-items: center;justify-content: center; display: flex; width: 437px;"  >{{svg|safe}}</div>
-      <p style="text-align: center">{{ shopdetails.shop_details }}</p>
-      <p>
-        ----------------------------------------------------------------------------------
-      </p>
+      <p>------------------------------------------------</p>
+      <div style="display: flex; align-items: center">
+        <div
+          style="
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            margin: 0px 1px;
+          "
+        >
+          {{svg|safe}}
+        </div>
+        <p style="text-align: center; word-spacing: -1px">
+          {{ shopdetails.shop_details }}
+        </p>
+      </div>
+     <p>------------------------------------------------</p>
     </div>
     <script>
       function printDiv(divName) {

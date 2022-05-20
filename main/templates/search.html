@@ -26,16 +26,37 @@
           >
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="{% url 'search-and-print' %}"
+            >Search & Print</a
+          >
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="{% url 'report' %}">Get Report</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'monthly_report' %}"
+            >Get Monthly Report</a
+          >
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'details' %}"
             ><i class="fa fa-gear"></i> Details</a
           >
         </li>
+        {% if request.user.is_authenticated %} {% if request.user.is_staff %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'area' %}">Areas</a>
+        </li>
+        <li class="nav-item" style="margin-right: 10px">
+          <a class="btn btn-primary" href="{% url 'show_subusers' %}"
+            >Subuser</a
+          >
+        </li>
+        {% endif %}
         <li class="nav-item">
           <a class="btn btn-danger" href="{% url 'logout' %}">Logout</a>
         </li>
+        {% endif %}
       </ul>
     </div>
   </div>
@@ -67,8 +88,8 @@
       <thead>
         <tr>
           <th scope="col">Customer</th>
-          <th scope="col"></th>
-          <th scope="col"></th>
+          <th scope="col">Phone</th>
+          <th scope="col">Customer ID</th>
         </tr>
       </thead>
       <tbody>
@@ -77,10 +98,12 @@
           <td scope="row">{{customer.name}}</td>
           <td scope="row">{{customer.phone}}</td>
           <td scope="row">{{customer.customer_id}}</td>
-          {% if customer.customer_status == 'Disabled' %}
+          {% if customer.customer_status == 'disabled' %}
           <td scope="row">
-            <a class="btn btn-secondary disabled" href="{% url 'fee' customer.id %}"
-              >Activate The Customer</a
+            <div
+              class="btn btn-secondary disabled"
+              href="{% url 'fee' customer.id %}"
+              >Activate The Customer</div
             >
           </td>
           {% else %}
@@ -89,7 +112,7 @@
               ><i class="fa fa-add"></i> Add Fee/Payment</a
             >
           </td>
-          {% endif %}
+          {% endif %} {% comment %}
           <!-- 
           <td scope="row">
             <a class="btn btn-danger" href="{% url 'delete' customer.id %}"
@@ -97,6 +120,7 @@
             >
           </td>
           -->
+          {% endcomment %}
           <td scope="row">
             <a class="btn btn-info" href="{% url 'edit_customer' customer.id %}"
               ><i class="fa fa-edit"></i> Edit Customer</a
@@ -108,17 +132,16 @@
     </table>
   </div>
 </div>
-{% endblock %}
-{% block script %}
+{% endblock %} {% block script %}
 <script type="text/javascript">
-  $(document).ready(function() {
-      $('#checkbox').change(function() {
-          $.post("/toggle/", {
-              id: '{{workexperiance.id}}', 
-              isworking: this.checked, 
-              csrfmiddlewaretoken: '{{ csrf_token }}' 
-          });
+  $(document).ready(function () {
+    $("#checkbox").change(function () {
+      $.post("/toggle/", {
+        id: "{{workexperiance.id}}",
+        isworking: this.checked,
+        csrfmiddlewaretoken: "{{ csrf_token }}",
       });
-  }); 
-  </script>
+    });
+  });
+</script>
 {% endblock %}

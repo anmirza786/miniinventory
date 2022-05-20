@@ -1,15 +1,20 @@
 from calendar import month_name
+from datetime import datetime
+from hashlib import new
 import random
+from sqlite3 import Date
 import string
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
 
+from django.forms import ValidationError
+
 # Create your models here.
 
 
 class Subuser(models.Model):
-    name = models.CharField(max_length=255,unique=True)
+    name = models.CharField(max_length=255, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         User, related_name='subuser', on_delete=models.CASCADE)
@@ -20,9 +25,11 @@ class Subuser(models.Model):
 
 class Area(models.Model):
     area_name = models.CharField(
-        max_length=265, blank=False, null=False, verbose_name='Area Name',unique=True)
+        max_length=265, blank=False, null=False, verbose_name='Area Name')
     area_user = models.ForeignKey(
-        Subuser, related_name='subname', null=False, blank=False, on_delete=models.CASCADE,unique=True)
+        Subuser, related_name='subname', null=False, blank=False, on_delete=models.CASCADE)
+    area_added_by = models.ForeignKey(
+        User, related_name='adminuser', null=False, blank=False, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.area_name
@@ -38,7 +45,7 @@ class SubArea(models.Model):
         return self.subarea_name
 
 
-def id_generator(size=4, chars=string.ascii_uppercase + string.digits):
+def id_generator(size=4, chars=string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
 
@@ -47,12 +54,12 @@ class Customers(models.Model):
         max_length=4, blank=True, null=True, unique=True, verbose_name='Customer`s ID')
     name = models.CharField(max_length=1000, blank=False,
                             null=False, verbose_name='Customer`s Name')
-    phone = models.CharField(max_length=13, blank=False,
-                             null=False, verbose_name='Customer`s Phone Number')
+    phone = models.CharField(max_length=13, blank=True,
+                             null=True, verbose_name='Customer`s Phone Number')
     address = models.TextField(
-        null=False, blank=False, verbose_name='Customer`s Address')
+        null=True, blank=True, verbose_name='Customer`s Address')
     customer_status = models.CharField(max_length=10, choices=(
-        ('Active', 'active'), ('Disabled', 'disabled')), default='disabled', null=False)
+        ('active', 'Active'), ('disabled', 'Disabled')), default='disabled', null=False)
     area = models.ForeignKey(Area, related_name='customer',
                              on_delete=models.CASCADE, verbose_name='Customer`s area')
     subarea = models.ForeignKey(SubArea, related_name='customer_sarea',
@@ -60,7 +67,7 @@ class Customers(models.Model):
     customer_fee_assigned = models.DecimalField(max_digits=8, blank=False, null=False,
                                                 decimal_places=2, verbose_name='Customer`s Assigned Fee')
     user = models.ForeignKey(User, related_name='user',
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE, verbose_name="Added BY Admin user")
     assigned_to_subuser = models.ForeignKey(
         Subuser, related_name='customersubuser', on_delete=models.CASCADE)
 
@@ -82,25 +89,33 @@ class Fee(models.Model):
     fee_paid = models.DecimalField(max_digits=8, blank=False, null=False,
                                    decimal_places=2, verbose_name='Customer`s Paid Fee')
     fee_status = models.CharField(max_length=10, choices=(
-        ('Paid', 'paid'), ('Not Paid', 'not_paid')), default='not_paid', null=False)
+        ('paid', 'Paid'), ('not_paid', 'Not Paid')), default='not_paid', null=False)
     debit = models.DecimalField(max_digits=8, blank=False, null=False,
                                 decimal_places=2, verbose_name='Customer`s Debit Fee', default=0)
     credit = models.DecimalField(max_digits=8, blank=False, null=False,
                                  decimal_places=2, verbose_name='Customer`s Credit Fee', default=0)
-    month = models.DateField(
-        auto_now_add=False, verbose_name='Fee of the Month')
+    Date = models.DateField(
+        auto_now_add=False, verbose_name='Fee of the Date')
+    Month = models.CharField(max_length=100, null=True, blank=True)
     taken_by = models.ForeignKey(User, related_name='fee',
                                  on_delete=models.CASCADE)
     given_on_date = models.DateTimeField(
         auto_now_add=True, verbose_name='Fee`s Date')
 
     def __str__(self):
-        return str(self.month)
+        return str(self.Date)
 
-    def save(self):
+    def save(self, *args, **kwargs):
+        super(Fee, self).save(*args, **kwargs)
         if self.customer.customer_fee_assigned < self.fee_paid:
             remaining = self.fee_paid - self.customer.customer_fee_assigned
             self.debit = remaining
+        if self.customer.customer_fee_assigned > self.fee_paid:
+            remaining = self.customer.customer_fee_assigned-self.fee_paid
+            self.credit = remaining
+        if self.Date:
+            self.Month = self.Date.strftime("%B-%Y")
+
         super(Fee, self).save()
 
 
