@@ -1,101 +1,139 @@
-{% extends 'base.html' %} {% block title %}Search And Printt{% endblock %} {% block navbar %}
-<nav class="navbar navbar-expand-lg navbar-light container">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'home' %}">Smart Inven</a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="{% url 'home' %}"
-            >Home</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'search' %}"
-            >Search & Add Customers</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="{% url 'search-and-print' %}"
-            >Search & Print</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'report' %}">Get Report</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'monthly_report' %}"
-            >Get Monthly Report</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'details' %}"
-            ><i class="fa fa-gear"></i> Details</a
-          >
-        </li>
-        {% if request.user.is_authenticated %} {% if request.user.is_staff %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'area' %}">Areas</a>
-        </li>
-        <li class="nav-item" style="margin-right: 10px">
-          <a class="btn btn-primary" href="{% url 'show_subusers' %}"
-            >Subuser</a
-          >
-        </li>
-        {% endif %}
-        <li class="nav-item">
-          <a class="btn btn-danger" href="{% url 'logout' %}">Logout</a>
-        </li>
-        {% endif %}
-      </ul>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice</title>
+  </head>
+  <style>
+    body {
+      font-size: 0.8rem;
+    }
+    table {
+      border-collapse: collapse;
+    }
+    table th {
+      border-right: 1px dashed black;
+    }
+    table th,
+    table td {
+      border-bottom: 1px solid black;
+      padding: 5px 20px;
+      border-collapse: collapse;
+    }
+    @media print and (width: 3in) {
+      @page {
+        margin: 0.5in;
+      }
+    }
+  </style>
+  <body style="display: flex; justify-content: center; align-items: center">
+    <div id="select" style="max-width: 437px">
+      <h3 style="text-align: center; margin: 8px 0">
+        {{ shopdetails.shop_name }}
+      </h3>
+      <p style="text-align: center; word-spacing: -1px; margin: 0">
+        {{ shopdetails.shop_contact }}
+      </p>
+      <p style="margin: 0">------------------------------------------------</p>
+      <table style="text-align: left; margin: 0">
+        <tr>
+          <th>Name:</th>
+
+          <td>{{ fee.customer.name }}</td>
+        </tr>
+        <tr>
+          <th>ID:</th>
+
+          <td>{{ fee.customer.customer_id }}</td>
+        </tr>
+        <tr>
+          <th>Phone:</th>
+
+          <td>{{ fee.customer.phone }}</td>
+        </tr>
+        <tr>
+          <th>Address:</th>
+
+          <td>{{ fee.customer.address }}</td>
+        </tr>
+        {% comment %}
+        <tr>
+          <th>Customer's Area:</th>
+
+          <td>{{ fee.customer.area }}</td>
+        </tr>
+        <tr>
+          <th>Customer's Sub-Area:</th>
+
+          <td>{{ fee.customer.subarea }}</td>
+        </tr>
+        {% endcomment %} {% comment %}
+        <tr>
+          <th>Fee Month:</th>
+
+          <td>{{ fee.Month }}</td>
+        </tr>
+        {% endcomment %}
+        <tr>
+          <th>Fee Date:</th>
+
+          <td>{{ fee.given_on_date }}</td>
+        </tr>
+        <tr>
+          <th>Fee Paid:</th>
+          <td>Rs. {{ fee.fee_paid }}</td>
+        </tr>
+        <tr>
+          <th>Debit:</th>
+
+          <td>Rs. {{ fee.debit }}</td>
+        </tr>
+        <tr>
+          <th>Credit:</th>
+
+          <td>Rs. {{ fee.credit }}</td>
+        </tr>
+        <tr>
+          <th>Cashier Name:</th>
+
+          <td>{{ fee.taken_by }}</td>
+        </tr>
+      </table>
+      <p style="margin: 0">------------------------------------------------</p>
+      <div style="display: flex; align-items: center; margin: 0">
+        <div
+          style="
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            margin: 0px 1px;
+          "
+        >
+          {{svg|safe}}
+        </div>
+        <p style="text-align: center; word-spacing: -1px; margin: 0">
+          {{ shopdetails.shop_details }}
+        </p>
+      </div>
+      <p style="margin: 0">------------------------------------------------</p>
     </div>
-  </div>
-</nav>
-{% endblock %} {% block content %}
-<div class="container">
-  <div class="columns is-multiline mb-6">
-    <table id="myTable" class="display" style="width: 100%">
-      <thead>
-        <tr>
-          <th scope="col">Customer</th>
-          <th scope="col">Fee Paid</th>
-          <th scope="col">Debit</th>
-          <th scope="col">Credit</th>
-          <th scope="col">Month</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for fee in fee %}
-        <tr>
-          <td scope="row">{{fee.customer}}</td>
-          <td scope="row">{{ fee.fee_paid }}</td>
-          <td scope="row">{{ fee.debit }}</td>
-          <td scope="row">{{ fee.credit }}</td>
-          <td scope="row">{{ fee.Month }}</td>
-          <td scope="row">
-            <a class="btn btn-primary" href="{% url 'print' fee.id %}">Print</a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
-{% endblock %} {% block script %}
-<script>
-  $(document).ready(function () {
-    $("#myTable").DataTable();
-  });
-</script>
-{% endblock %}
+    <script>
+      function printDiv(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+
+        window.print();
+
+        document.body.innerHTML = originalContents;
+        //location.reload();
+      }
+      function goBack() {
+        window.history.go(-1);
+      }
+    </script>
+  </body>
+</html>
